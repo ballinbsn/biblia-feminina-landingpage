@@ -104,7 +104,6 @@
           <!-- vídeo flutuante -->
           <button id="video-flutuante" type="button" aria-label="Assistir vídeo da Bíblia de Estudo Para o Cotidiano da Mulher" style="width:48px;height:48px;background:rgba(0,0,0,.22);border:none;" class="absolute bottom-3 left-3 z-30 rounded-full overflow-hidden transition-transform duration-200 active:scale-[0.97]">
             <img src="flutuante/oAy6WofNepqQIehZGMgH7mY8r2EAvWQMLeAFIv~tplv-noop.jpeg" alt="Ver vídeo" class="absolute inset-0 w-full h-full object-cover pointer-events-none">
-            <video src="videos/6.mp4" muted autoplay loop playsinline class="absolute inset-0 w-full h-full object-cover pointer-events-none"></video>
           </button>
 
           <div style="background:rgba(15,15,15,.55);"
@@ -4950,10 +4949,13 @@
         closest.classList.add('ugc-videos__item--active');
         syncProgress();
 
-        preloadNeighbors(closest);
-
+        // Só começa a baixar os vídeos vizinhos quando a seção realmente
+        // entrar na tela (started=true via IntersectionObserver) — antes
+        // disso isso rodava incondicionalmente e baixava vários vídeos
+        // (~50MB) logo na abertura da página, mesmo fora da tela.
         if (!started) return;
 
+        preloadNeighbors(closest);
         activateAndPlay(closest);
 
         var allItems = track.querySelectorAll('.ugc-videos__item');
