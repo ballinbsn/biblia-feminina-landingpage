@@ -776,7 +776,7 @@
     </div>
 
     <!--
-      ── Modal: Checkout Pix (PinPay) ──
+      ── Modal: Checkout Pix (OnyxPag) ──
       Substitui o checkout externo removido. Fala só com o backend próprio
       configurado em window.CONFIG.BACKEND_URL (ver script "Config" perto
       do fim do body) — nenhum dado vai pra nenhum outro lugar.
@@ -1785,7 +1785,7 @@
       }
     }
 
-    /* ── Modal de checkout (Pix / PinPay) ── */
+    /* ── Modal de checkout (Pix / OnyxPag) ── */
     .checkout-modal {
       position: fixed;
       inset: 0;
@@ -5067,7 +5067,7 @@
   </script>
   <script src="js/qrcode.min.js"></script>
 
-  <!-- ── Checkout Pix (PinPay) ── -->
+  <!-- ── Checkout Pix (OnyxPag) ── -->
   <script>
     (function () {
       var PRODUCT_NAME = "Bíblia de Estudo Para o Cotidiano da Mulher";
@@ -5126,7 +5126,7 @@
       function onlyDigits(v) { return String(v || "").replace(/\D/g, ""); }
 
       // Validação de CPF por dígito verificador (evita erro de digitação
-      // antes de mandar pro backend — a PinPay exige um CPF válido).
+      // antes de mandar pro backend — a OnyxPag exige um CPF válido).
       function isValidCPF(value) {
         var cpf = onlyDigits(value);
         if (cpf.length !== 11 || /^(\d)\1{10}$/.test(cpf)) return false;
@@ -5407,7 +5407,14 @@
         if (successDeliveryEl) successDeliveryEl.textContent = "Entrega prevista: " + SHIPPING_DELIVERY[selectedShipping] + " (" + SHIPPING_LABEL[selectedShipping] + ").";
 
         pixQrEl.innerHTML = "";
-        if (currentPixCode && window.QRCode) {
+        if (pix.qr_code_image) {
+          // A OnyxPag já manda o QR Code pronto (imagem base64).
+          var img = document.createElement("img");
+          img.src = pix.qr_code_image;
+          img.alt = "QR Code do Pix";
+          pixQrEl.appendChild(img);
+        } else if (currentPixCode && window.QRCode) {
+          // Sem imagem pronta: gera no navegador a partir do código copia-e-cola.
           new QRCode(pixQrEl, { text: currentPixCode, width: 192, height: 192, correctLevel: QRCode.CorrectLevel.M });
         }
 
@@ -5462,9 +5469,9 @@
         });
       });
 
-      // A PinPay às vezes devolve uma validade bem mais longa que os 15min
-      // pedidos em expires_in — formata de forma legível em qualquer caso
-      // (a validade real do Pix é sempre a que ela retornar, nunca inventamos).
+      // O gateway pode devolver uma validade diferente da esperada — formata
+      // de forma legível em qualquer caso (a validade real do Pix é sempre
+      // a que ele retornar em expires_at, nunca inventamos um número).
       function formatCountdown(diffMs) {
         var totalSeconds = Math.floor(diffMs / 1000);
         var days = Math.floor(totalSeconds / 86400);
