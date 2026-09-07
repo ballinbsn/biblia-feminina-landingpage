@@ -919,14 +919,20 @@
           </form>
         </div>
 
-        <!-- Passo 2: QR Code / copia-e-cola do Pix -->
+        <!-- Passo 2: copia-e-cola do Pix (principal) / QR Code (secundário) -->
         <div class="checkout-step" id="checkout-step-pix" hidden>
           <h2 class="checkout-modal__title">Pague com Pix</h2>
           <p class="checkout-pix-amount" id="checkout-pix-amount"></p>
-          <div class="checkout-pix-qr" id="checkout-pix-qr"></div>
+          <p class="checkout-pix-instruction">Abra o app do seu banco, escolha pagar com <strong>Pix Copia e Cola</strong> e cole o código abaixo</p>
           <button type="button" class="checkout-pix-copy" id="checkout-pix-copy">Copiar código Pix</button>
           <p class="checkout-pix-timer" id="checkout-pix-timer"></p>
           <p class="checkout-pix-status" id="checkout-pix-status">Aguardando pagamento…</p>
+
+          <details class="checkout-pix-qr-toggle">
+            <summary>Prefere escanear? Veja o QR Code</summary>
+            <div class="checkout-pix-qr" id="checkout-pix-qr"></div>
+          </details>
+
           <p class="checkout-pix-delivery" id="checkout-pix-delivery"></p>
         </div>
 
@@ -2133,19 +2139,82 @@
     }
 
     .checkout-pix-amount {
-      margin: 0 0 14px;
+      margin: 0 0 6px;
       text-align: center;
       font-size: 22px;
       font-weight: 900;
       color: var(--pi-primary);
     }
 
+    .checkout-pix-instruction {
+      margin: 0 0 16px;
+      text-align: center;
+      font-size: 13.5px;
+      line-height: 1.4;
+      color: var(--pi-text-2);
+    }
+
+    .checkout-pix-instruction strong {
+      color: var(--pi-text-1);
+    }
+
+    /* ── Copiar código: ação principal desta tela ── */
+    .checkout-pix-copy {
+      display: block;
+      width: 100%;
+      box-sizing: border-box;
+      min-height: 56px;
+      margin-bottom: 14px;
+      background: var(--pi-primary);
+      border: none;
+      border-radius: 999px;
+      color: #fff;
+      font-size: 15px;
+      font-weight: 800;
+      letter-spacing: .02em;
+      text-transform: uppercase;
+      cursor: pointer;
+      box-shadow: 0 12px 26px rgba(152,33,139,.3);
+      transition: background-color .18s ease, box-shadow .18s ease;
+    }
+
+    @media (hover: hover) {
+      .checkout-pix-copy:not(.is-copied):hover {
+        background: var(--pi-primary-hover);
+      }
+    }
+
+    .checkout-pix-copy.is-copied {
+      background: #2E8B57;
+      box-shadow: 0 12px 26px rgba(46,139,87,.3);
+    }
+
+    /* ── QR Code: alternativa secundária, recolhida por padrão ── */
+    .checkout-pix-qr-toggle {
+      margin: 18px 0 4px;
+      text-align: center;
+    }
+
+    .checkout-pix-qr-toggle summary {
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--pi-text-3);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      list-style: none;
+    }
+
+    .checkout-pix-qr-toggle summary::-webkit-details-marker {
+      display: none;
+    }
+
     .checkout-pix-qr {
       display: grid;
       place-items: center;
-      padding: 14px;
-      margin: 0 auto 14px;
-      width: 220px;
+      padding: 12px;
+      margin: 12px auto 0;
+      width: 180px;
       background: #fff;
       border: 1.5px solid var(--pi-border);
       border-radius: var(--pi-radius-sm);
@@ -2155,28 +2224,6 @@
       width: 100%;
       height: auto;
       display: block;
-    }
-
-    .checkout-pix-copy {
-      display: block;
-      width: 100%;
-      box-sizing: border-box;
-      min-height: 48px;
-      margin-bottom: 12px;
-      background: var(--pi-bg-subtle);
-      border: 1.5px solid var(--pi-border);
-      border-radius: 999px;
-      color: var(--pi-primary);
-      font-size: 14px;
-      font-weight: 800;
-      cursor: pointer;
-      transition: background-color .18s ease;
-    }
-
-    .checkout-pix-copy.is-copied {
-      background: var(--pi-primary);
-      color: #fff;
-      border-color: var(--pi-primary);
     }
 
     .checkout-pix-timer {
