@@ -4920,6 +4920,11 @@
         });
         closest.classList.add('ugc-videos__item--active');
         syncProgress();
+        // Mesma regra do commitActive: só pré-carrega depois que a seção
+        // entrou na tela. O ajuste de scrollLeft na inicialização (mais
+        // abaixo) dispara um evento de scroll nativo que cai aqui antes
+        // mesmo da IntersectionObserver rodar, se não checarmos "started".
+        if (!started) return;
         preloadNeighbors(closest);
       }
 
